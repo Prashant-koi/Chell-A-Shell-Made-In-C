@@ -1,0 +1,14 @@
+#executable
+chell
+
+#object files
+*.o
+
+#debug files
+.dSYM/
+
+#VS code files belwo
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
