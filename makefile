@@ -1,10 +1,10 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -g -D_POSIX_C_SOURCE=200809L
 
-all: chell
+all: chell.exe
 
-chell: chell.c chell_extenshions.c
-	$(CC) $(CFLAGS) -o chell chell.c chell_extensions.c
+chell.exe: chell.c chell_extensions.c
+	$(CC) $(CFLAGS) -o chell.exe chell.c chell_extensions.c
 
 clean:
-	rm -f chell
+	del chell.exe
