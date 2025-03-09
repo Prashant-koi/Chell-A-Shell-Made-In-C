@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <process.h>
+
 #ifdef _WIN32
     #include <windows.h>
+    #include <process.h>
 #else
     #include <unistd.h>
+    #include <sys/types.h>
+    #include <sys/wait.h>
 #endif
 
 
@@ -74,7 +77,7 @@ char** parse_line(char* line) {
         exit(EXIT_FAILURE);
     }
 
-    token = strtok(line, "\t\r\n\a");
+    token = strtok(line, " \t\r\n\a");
     while (token != NULL) {
         tokens[position] = token;
         position++;
@@ -88,11 +91,56 @@ char** parse_line(char* line) {
             }
         }
 
-        token = strtok(NULL, "\t\r\n\a");
+        token = strtok(NULL, " \t\r\n\a");
     }
     tokens[position] = NULL;
     return tokens;
 }
+
+int execute_command(char** args) {
+    if (args[0] == NULL) {
+        return 1; // No command entered
+    }
+
+#ifdef _WIN32
+    // conver ls to dir
+    if (strcmp(args[0], "ls") == 0) {
+        system("dir");
+        return 1;
+    }
+
+    // For other commands
+    intptr_t pid = _spawnvp(_P_WAIT, args[0], (const char* const*)args);
+    if (pid == -1) {
+        printf("Failed to execute command: %s\n", args[0]);
+        return 1;
+    }
+
+#else
+    pid_t pid, wpid;
+    int status;
+
+    pid = fork();
+    if (pid == 0) {
+        // Child process
+        if (execvp(args[0], args) == -1) {
+            perror("chell");
+        }
+        exit(EXIT_FAILURE);
+    } else if (pid < 0) {
+        // Fork failed
+        perror("chell");
+    } else {
+        // Parent 
+        do {
+            wpid = waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
+#endif
+
+    return 1;
+}
+
 
 int main() {
     char *line;
@@ -105,8 +153,7 @@ int main() {
         args = parse_line(line);
 
         if (args[0] != NULL) {
-            printf("Command entered: %s \n", args[0]);
-            // We will execute command here(will do later lol)
+            status = execute_command(args);
         }
 
         free(line);
@@ -114,5 +161,4 @@ int main() {
     }
 
     return EXIT_SUCCESS;
-    
 }
