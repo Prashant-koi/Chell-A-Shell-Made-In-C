@@ -59,11 +59,11 @@ You can now enter commands as you would in a typical shell.
 ### Current Commands
 - Any system command available in your PATH
 - Special handling for `ls` on Windows (converts to `dir`)
+- `exit` - Exit the shell
 
 ### Planned Built-in Commands
 - `cd [directory]` - Change the current directory
 - `help` - Display help information
-- `exit` - Exit the shell
 - `history` - Show command history
 
 ## Project Structure
