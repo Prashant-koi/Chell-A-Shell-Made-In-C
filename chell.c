@@ -109,6 +109,10 @@ int execute_command(char** args) {
         return 1;
     }
 
+    if(strcmp(args[0], "exit") == 0) {
+        exit(0);
+    }
+
     // For other commands
     intptr_t pid = _spawnvp(_P_WAIT, args[0], (const char* const*)args);
     if (pid == -1) {
