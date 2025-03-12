@@ -9,10 +9,10 @@ A lightweight Unix-like shell implementation in C, designed for both Windows and
 - [x] Windows `ls` command (automatically translates to `dir`)
 - [x] Custom line reading and parsing implementation
 - [x] Simple error handling
+- [x] Built-in commands (`cd`, `help`, `exit`)
 
 ## Planned Features
 
-- [ ] Built-in commands (`cd`, `help`, `exit`)
 - [ ] Support for pipelines (`|`)
 - [ ] Input/output redirection (`<`, `>`, `>>`)
 - [ ] Background process execution (`&`)
@@ -60,10 +60,10 @@ You can now enter commands as you would in a typical shell.
 - Any system command available in your PATH
 - Special handling for `ls` on Windows (converts to `dir`)
 - `exit` - Exit the shell
-
-### Planned Built-in Commands
 - `cd [directory]` - Change the current directory
 - `help` - Display help information
+
+### Planned Built-in Commands
 - `history` - Show command history
 
 ## Project Structure
