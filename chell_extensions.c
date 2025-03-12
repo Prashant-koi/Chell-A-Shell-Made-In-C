@@ -3,7 +3,13 @@
 #include <string.h>
 
 #define HISTORY_SIZE 20
+#ifndef CHELL_EXTENSIONS_H
+#define CHELL_EXTENSIONS_H
 
+void add_to_history(char* line);
+int shell_history(char** args);
+
+#endif
 
 
 //History implementation
