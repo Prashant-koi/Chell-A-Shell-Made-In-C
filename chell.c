@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "chell_extensions.h"
+
 #ifdef _WIN32
     #include <windows.h>
     #include <process.h>
@@ -27,13 +29,14 @@ int shell_help(char** args);
 char* builtin_commands[] = {
     "cd",
     "help",
-    "exit"
+    "history",
 };
 
 //Array of function pointers to builtin commands
 int(*builtin_functions[])(char**) = {
     &shell_cd,
     &shell_help,
+    &shell_history,
 };
 
 int num_builtins() {
@@ -222,6 +225,7 @@ int main() {
     while (status) {
         display_prompt();
         line = read_line();
+        add_to_history(line);
         args = parse_line(line);
 
         if (args[0] != NULL) {

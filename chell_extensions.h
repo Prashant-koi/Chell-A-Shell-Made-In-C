@@ -37,6 +37,7 @@ void add_to_history(char* line) {
 }
 
 int shell_history(char** args) {
+    (void)args;
     for (int i = 0; i < history_count; i++) {
         printf("%d: %s\n", i+1, history[i]);
     }
