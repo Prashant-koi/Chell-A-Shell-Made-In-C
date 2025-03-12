@@ -5,16 +5,41 @@
 #ifdef _WIN32
     #include <windows.h>
     #include <process.h>
+    #include <direct.h>
+    #define chdir _chdir
+    #define HOME_ENV "USERPROFILE" 
 #else
     #include <unistd.h>
     #include <sys/types.h>
     #include <sys/wait.h>
+    #define HOME_ENV "HOME"
 #endif
 
 
 #define MAX_LINE 1024
 #define MAX_ARGS 64
 #define PROMPT "chell> "
+
+int shell_cd(char** args);
+int shell_help(char** args);
+
+//this is the list of builtin commands
+char* builtin_commands[] = {
+    "cd",
+    "help",
+    "exit"
+};
+
+//Array of function pointers to builtin commands
+int(*builtin_functions[])(char**) = {
+    &shell_cd,
+    &shell_help,
+};
+
+int num_builtins() {
+    return sizeof(builtin_commands) / sizeof(char*);
+}
+
 
 void display_prompt() {
     printf("%s", PROMPT);
@@ -98,6 +123,14 @@ char** parse_line(char* line) {
 }
 
 int execute_command(char** args) {
+
+    // Check for builtin commands
+    for (int i = 0; i < num_builtins(); i++) {
+        if(strcmp(args[0], builtin_commands[i]) == 0) {
+            return (*builtin_functions[i])(args);
+        }
+    }
+
     if (args[0] == NULL) {
         return 1; // No command entered
     }
@@ -145,6 +178,41 @@ int execute_command(char** args) {
     return 1;
 }
 
+//cd command change directory
+int shell_cd(char** args) {
+    if (args[1] == NULL) {
+        // If no argument then go to the HOME directory
+        char* home = getenv(HOME_ENV);
+        if (home == NULL) {
+            fprintf(stderr, "chell: HOME directory not set\n");
+            return 1;
+        }
+        if (chdir(home) != 0) {
+            perror("chell");
+        }
+    } else {
+        if (chdir(args[1]) != 0) {
+            perror("chell");
+        }
+    }
+    return 1;
+}
+
+//Help command
+int shell_help(char** args) {
+    (void)args;
+
+    printf("Chell - A simple shell implemetation made in C. \n");
+    printf("Type program names and arguments, then press enter.\n");
+    printf("Built-in commands:\n");
+
+    for (int i = 0; i < num_builtins(); i++){
+        printf("%s\n", builtin_commands[i]);
+    }
+
+    printf("Use the man command for information on other programs. \n");
+    return 1;
+}
 
 int main() {
     char *line;
