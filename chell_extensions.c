@@ -1,4 +1,3 @@
-
 #include "chell_extensions.h"
 
 #include <unistd.h>
@@ -50,7 +49,7 @@ int execut_piped_commands(char** args) {
     }
     
     // Build the pipe command
-    sprintf(pipe_cmd, "%s | %s", cmd1_str, cmd2_str);
+    snprintf(pipe_cmd, sizeof(pipe_cmd), "%s | %s", cmd1_str, cmd2_str);
     system(pipe_cmd);
     return 1;
 #else 
