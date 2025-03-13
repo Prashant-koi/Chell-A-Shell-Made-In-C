@@ -138,6 +138,10 @@ int execute_command(char** args) {
         return 1; // No command entered
     }
 
+    if (execut_piped_commands(args) != -1) {
+        return 1;
+    }
+
 #ifdef _WIN32
     // conver ls to dir
     if (strcmp(args[0], "ls") == 0) {
