@@ -11,10 +11,10 @@ A lightweight Unix-like shell implementation in C, designed for both Windows and
 - [x] Simple error handling
 - [x] Built-in commands (`cd`, `help`, `exit`)
 - [x] Command history
+- [x] Support for pipelines (`|`)
 
 ## Planned Features
 
-- [ ] Support for pipelines (`|`)
 - [ ] Input/output redirection (`<`, `>`, `>>`)
 - [ ] Background process execution (`&`)
 - [ ] Tab completion
@@ -54,7 +54,6 @@ chell>
 
 You can now enter commands as you would in a typical shell.
 
-## Command Support
 
 ### Current Commands
 - Any system command available in your PATH

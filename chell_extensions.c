@@ -36,7 +36,7 @@ int execut_piped_commands(char** args) {
     // Create command strings for system()
     char cmd1_str[1024] = {0};
     char cmd2_str[1024] = {0};
-    char pipe_cmd[2048] = {0};
+    char pipe_cmd[4096] = {0};  
     
     for (i = 0; cmd1[i] != NULL; i++) {
         strcat(cmd1_str, cmd1[i]);
