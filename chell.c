@@ -142,6 +142,11 @@ int execute_command(char** args) {
         return 1;
     }
 
+    int redir_result = handle_redirection(args);
+    if (redir_result != 0) {
+        return (redir_result == -1) ? 1 : redir_result;
+    }
+    
 #ifdef _WIN32
     // conver ls to dir
     if (strcmp(args[0], "ls") == 0) {
