@@ -16,5 +16,6 @@
 void add_to_history(char* line);
 int shell_history(char** args);
 int execut_piped_commands(char** args);
+int handle_redirection(char** args);
 
 #endif

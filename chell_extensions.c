@@ -1,6 +1,7 @@
 #include "chell_extensions.h"
 
 #include <unistd.h>
+#include <fcntl.h>
 #ifdef _WIN32
     #include <windows.h>
     #include <process.h>
@@ -143,6 +144,103 @@ int shell_history(char** args) {
     (void)args;
     for (int i = 0; i < history_count; i++) {
         printf("%d: %s\n", i+1, history[i]);
+    }
+    return 1;
+}
+
+int handle_redirection(char** args) {
+    int i;
+    int in_redirect = -1;
+    int out_redirect = -1;
+    int append_redirect = -1;
+    char* in_file = NULL;
+    char* out_file = NULL;
+
+    // Find redirection
+    for (i = 0; args[i] != NULL; i++) {
+        if (strcmp(args[i], "<") == 0) {
+            args[i] = NULL;
+            in_redirect = i;
+            if (args[i+1] != NULL) {
+                in_file = args[i+1];
+            } else {
+                fprintf(stderr, "chell:expected filname after <\n");
+                return -1;
+            }
+        } else if (strcmp(args[i], ">") == 0) {
+            args[i] =NULL;
+            out_redirect = i;
+            if (args[i+1] != NULL) {
+                out_file = args[i+1];
+            } else {
+                fprintf(stderr, "chell:expected filname after >\n");
+                return -1;
+            }
+        } else if(strcmp (args[i] , ">>") == 0) {
+            args[i] = NULL;
+            append_redirect = i;
+            if (args[i+1] != NULL) {
+                out_file = args[i+1];
+            } else {
+                fprintf(stderr, "chell:expected filname after >>\n");
+                return -1;
+            }
+        }
+    }
+
+    // No redirection
+    if (in_redirect == -1 && out_redirect == -1 && append_redirect == -1) {
+        return 0;
+    }
+
+    //fork child process
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        
+        if (in_redirect != -1) {
+            int fd = open(in_file, O_RDONLY);
+            if (fd == -1) {
+                perror("chell");
+                exit(EXIT_FAILURE);
+            }
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        }
+
+        if (out_redirect != -1) {
+            int fd = open(out_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fd == -1) {
+                perror("chell");
+                exit(EXIT_FAILURE);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+
+        //append redirection
+        if (append_redirect != -1) {
+            int fd = open(out_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            if (fd == -1) {
+                perror("chell");
+                exit(EXIT_FAILURE);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+
+        //execute command
+        if (execvp(args[0], args) == -1) {
+            perror("chell");
+            exit(EXIT_FAILURE);
+        }
+    } else if (pid < 0) {
+        perror("chell");
+        return -1;
+    } else {
+        int status;
+        waitpid(pid, &status, 0);
+        return 1;
     }
     return 1;
 }
