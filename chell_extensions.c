@@ -193,6 +193,35 @@ int handle_redirection(char** args) {
         return 0;
     }
 
+#ifdef _WIN32
+    // Windows 
+    char cmd_str[4096] = {0};
+    
+    for (i = 0; args[i] != NULL; i++) {
+        strcat(cmd_str, args[i]);
+        if (args[i+1] != NULL) 
+            strcat(cmd_str, " ");
+    }
+    
+    // Add redirection
+    if (in_redirect != -1) {
+        strcat(cmd_str, " < ");
+        strcat(cmd_str, in_file);
+    }
+    
+    if (out_redirect != -1) {
+        strcat(cmd_str, " > ");
+        strcat(cmd_str, out_file);
+    }
+    
+    if (append_redirect != -1) {
+        strcat(cmd_str, " >> ");
+        strcat(cmd_str, out_file);
+    }
+    
+    int result = system(cmd_str);
+    return (result == 0) ? 1 : -1;
+#else //Unix like systems
     //fork child process
     pid_t pid = fork();
 
@@ -242,5 +271,6 @@ int handle_redirection(char** args) {
         waitpid(pid, &status, 0);
         return 1;
     }
-    return 1;
+#endif
+    return 1; 
 }
