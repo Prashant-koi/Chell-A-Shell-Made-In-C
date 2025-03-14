@@ -12,10 +12,10 @@ A lightweight Unix-like shell implementation in C, designed for both Windows and
 - [x] Built-in commands (`cd`, `help`, `exit`)
 - [x] Command history
 - [x] Support for pipelines (`|`)
+- [x] Input/output redirection (`<`, `>`, `>>`)
 
 ## Planned Features
 
-- [ ] Input/output redirection (`<`, `>`, `>>`)
 - [ ] Background process execution (`&`)
 - [ ] Tab completion
 - [ ] Signal handling (`Ctrl+C`)
@@ -62,6 +62,8 @@ You can now enter commands as you would in a typical shell.
 - `cd [directory]` - Change the current directory
 - `help` - Display help information
 - `history` - Show command history
+- piping
+- i/o redirection
 
 ## Project Structure
 
