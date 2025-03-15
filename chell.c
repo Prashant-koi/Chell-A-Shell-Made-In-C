@@ -138,6 +138,12 @@ int execute_command(char** args) {
         return 1; // No command entered
     }
 
+    //check for bacground operations
+    int bg_result = handle_background(args);
+    if (bg_result != 0) {
+        return (bg_result == -1) ? 1 : bg_result;
+    }
+
     if (execut_piped_commands(args) != -1) {
         return 1;
     }
