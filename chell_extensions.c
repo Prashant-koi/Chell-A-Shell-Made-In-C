@@ -295,6 +295,28 @@ int handle_background(char** args) {
         return 0;
     }
 
+#ifdef _WIN32
+    // Windws
+    char cmd_str[4096] = {0};
+    
+    //command string
+    for (i = 0; args[i] != NULL; i++) {
+        strcat(cmd_str, args[i]);
+        if (args[i+1] != NULL) 
+            strcat(cmd_str, " ");
+    }
+    
+    // Run in background
+    char bg_cmd[4100] = {0};
+    snprintf(bg_cmd, sizeof(bg_cmd), "start /B %s", cmd_str);
+    
+    int result = system(bg_cmd);
+    if (result != 0) {
+        fprintf(stderr, "Failed to execute background command\n");
+        return -1;
+    }
+
+#else
     //Fork for background
     pid_t pid = fork();
 
@@ -313,5 +335,6 @@ int handle_background(char** args) {
         return 1;
     }
 
-    return 1;
+    #endif
+return 1; 
 }
