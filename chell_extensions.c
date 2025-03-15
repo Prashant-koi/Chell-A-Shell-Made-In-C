@@ -298,23 +298,41 @@ int handle_background(char** args) {
 #ifdef _WIN32
     // Windws
     char cmd_str[4096] = {0};
+
     
-    //command string
+    // Build command string
     for (i = 0; args[i] != NULL; i++) {
         strcat(cmd_str, args[i]);
         if (args[i+1] != NULL) 
             strcat(cmd_str, " ");
     }
     
-    // Run in background
-    char bg_cmd[4200] = {0};
-    snprintf(bg_cmd, sizeof(bg_cmd), "start /B %s", cmd_str);
+    STARTUPINFO si = {0};
+    PROCESS_INFORMATION pi = {0};
+    si.cb = sizeof(si);
     
-    int result = system(bg_cmd);
-    if (result != 0) {
-        fprintf(stderr, "Failed to execute background command\n");
+    // Create process with CREATE_NO_WINDOW flag for background operation
+    if (!CreateProcess(
+            NULL,           // No module name (use command line)
+            cmd_str,        // Command line
+            NULL,           // Process handle not inheritable
+            NULL,           // Thread handle not inheritable
+            FALSE,          // Set handle inheritance to FALSE
+            CREATE_NO_WINDOW, // Create with no window (background)
+            NULL,           // Use parent's environment block
+            NULL,           // Use parent's starting directory
+            &si,            // Pointer to STARTUPINFO structure
+            &pi)            // Pointer to PROCESS_INFORMATION structure
+    ) {
+        fprintf(stderr, "CreateProcess failed (%lu)\n", GetLastError());
         return -1;
     }
+    
+    // Close handles to avoid resource leak
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    
+    return 1;
 
 #else
     //Fork for background
@@ -335,6 +353,6 @@ int handle_background(char** args) {
         return 1;
     }
 
+    return 1;
     #endif
-return 1; 
 }
