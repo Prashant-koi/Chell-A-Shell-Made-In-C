@@ -307,7 +307,7 @@ int handle_background(char** args) {
     }
     
     // Run in background
-    char bg_cmd[4100] = {0};
+    char bg_cmd[4200] = {0};
     snprintf(bg_cmd, sizeof(bg_cmd), "start /B %s", cmd_str);
     
     int result = system(bg_cmd);
