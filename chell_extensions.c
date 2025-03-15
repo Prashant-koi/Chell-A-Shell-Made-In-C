@@ -149,6 +149,7 @@ int shell_history(char** args) {
 }
 
 int handle_redirection(char** args) {
+
     int i;
     int in_redirect = -1;
     int out_redirect = -1;
@@ -273,4 +274,44 @@ int handle_redirection(char** args) {
     }
 #endif
     return 1; 
+}
+
+
+
+int handle_background(char** args) {
+    int i;
+    int background = 0;
+
+    //look for &
+    for (i = 0; args[i] != NULL; i++) {
+        if (strcmp(args[i], "&") == 0) {
+            args[i] = NULL;
+            background = 1;
+            break;
+        }
+    }
+
+    if (!background) {
+        return 0;
+    }
+
+    //Fork for background
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        //child
+        if (execvp(args[0], args) == -1) {
+            perror("chell");
+            exit(EXIT_FAILURE);
+        }
+    } else if (pid < 0) {
+        perror("chell");
+        return -1;
+    } else {
+        //parent
+        printf("[1] %d\n", pid);
+        return 1;
+    }
+
+    return 1;
 }
