@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <signal.h>
 #ifdef _WIN32
     #include <windows.h>
     #include <process.h>
@@ -11,7 +12,6 @@
 
 
 void signal_handler(int sig) {
-    (void)sig;
     printf("\n");
     //noexit
 }

@@ -237,6 +237,9 @@ int main() {
     char **args;
     int status = 1;
 
+    //setup signal handler
+    setup_signal_handler();
+
     while (status) {
         display_prompt();
         line = read_line();
@@ -250,6 +253,8 @@ int main() {
         free(line);
         free(args);
     }
+
+
 
     return EXIT_SUCCESS;
 }
