@@ -14,11 +14,11 @@ A lightweight Unix-like shell implementation in C, designed for both Windows and
 - [x] Support for pipelines (`|`)
 - [x] Input/output redirection (`<`, `>`, `>>`)
 - [x] Background process execution (`&`)
+- [x] Signal handling (`Ctrl+C`)
 
 ## Planned Features
 
 - [ ] Tab completion
-- [ ] Signal handling (`Ctrl+C`)
 - [ ] Environment variable support
 
 ## Building
