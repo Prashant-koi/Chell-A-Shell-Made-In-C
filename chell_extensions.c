@@ -10,6 +10,11 @@
 #endif
 
 
+void signal_handler(int sig) {
+    (void)sig;
+    printf("\n");
+    //noexit
+}
 int execut_piped_commands(char** args) {
     int i;
     int pipe_os = -1;
@@ -354,5 +359,24 @@ int handle_background(char** args) {
     }
 
     return 1;
+    #endif
+}
+
+//setup signal handler
+void setup_signal_handler() {
+    #ifdef _WIN32
+        // Windows
+        signal(SIGINT, signal_handler);
+    #else
+    struct sigaction sa;
+
+    //setup SIGINT handler
+    sa.sa_handler = signal_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(SIGINT, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
     #endif
 }
