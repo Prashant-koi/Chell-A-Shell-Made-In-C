@@ -65,6 +65,7 @@ You can now enter commands as you would in a typical shell.
 - Piping (Using |)
 - i/o redirection
 - Background processing (using &)
+- Signal Handling (Ctrl + C)
 
 ## Project Structure
 
